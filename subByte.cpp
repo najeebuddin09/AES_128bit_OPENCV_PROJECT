@@ -5,7 +5,7 @@
 */
 
 #include "AES.hpp"
-#include "SBOX.hpp"
+#include "lookup_tables.hpp"
 
 Mat subByte (Mat state) {
 

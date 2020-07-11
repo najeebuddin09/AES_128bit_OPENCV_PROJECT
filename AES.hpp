@@ -16,6 +16,7 @@ using namespace cv;
 const int NumberofBlocks = 4;
 
 Mat subByte(Mat );
-Mat shiftRows(Mat ); 
+Mat shiftRows(Mat );
+Mat mixColumns(Mat );
 void block_encryption();
 

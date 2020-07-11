@@ -51,5 +51,4 @@ void block_encryption() {
         }
         cout<<endl;
     }
-
 }
