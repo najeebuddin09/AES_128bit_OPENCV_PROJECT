@@ -34,7 +34,7 @@ void block_encryption() {
         cout<<endl;
     } 
     
-    cout<<"After subBytes operation"<<endl;
+    cout<<"After Sub Bytes operation"<<endl;
     for (int i=0; i<NumberofBlocks; i++){
         for (int j=0; j<NumberofBlocks; j++){
             cout<<std::hex<<(int)afterSubByte.at<uint8_t>(i,j)<<' ';
@@ -44,11 +44,23 @@ void block_encryption() {
 
     Mat afterShiftRows = shiftRows(afterSubByte);
 
-    cout<<"After shiftRows operation"<<endl;
+    cout<<"After Shift Rows operation"<<endl;
     for (int i=0; i<NumberofBlocks; i++){
         for (int j=0; j<NumberofBlocks; j++){
             cout<<std::hex<<(int)afterShiftRows.at<uint8_t>(i,j)<<' ';
         }
         cout<<endl;
     }
+
+    Mat afterMixColumns = mixColumns(afterShiftRows);
+
+    cout<<"After Mix Columns operation"<<endl;
+    for (int i=0; i<NumberofBlocks; i++){
+        for (int j=0; j<NumberofBlocks; j++){
+            cout<<std::hex<<(int)afterMixColumns.at<uint8_t>(i,j)<<' ';
+        }
+        cout<<endl;
+    }
+
+
 }
