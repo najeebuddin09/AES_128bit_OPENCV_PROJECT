@@ -8,6 +8,10 @@
 
 #include "AES.hpp"
 
+void PrintMatrix (Mat ,const char *);
+void PrintArray(uint8_t *, const char *);
+void PrintExpandedKey(uint8_t *, const char *);
+
 void block_encryption() {
     uint8_t data[NumberofBlocks][NumberofBlocks] = {
         0x19, 0xa0, 0x9a, 0xe9,
@@ -16,6 +20,7 @@ void block_encryption() {
         0xbe, 0x2b, 0x2a, 0x08
     };
 
+    // one d array for key which is 16 bytes of key or 128 bit key
     uint8_t key[NumberofBlocks*NumberofBlocks] = {
         0xa0, 0x88, 0x23, 0x2a,
         0xfa, 0x54, 0xa3, 0x6c,
@@ -31,70 +36,54 @@ void block_encryption() {
         }
     } 
 
+
+    // for 10 rounds and one initial round we will need different keys for encryption
+    // so we will use AES keyExpansion concept to expand the key upto 176 bytes 
+    // 11 rounds  = 16 bytes for each round
     // here we declare a pointer expandedKey which will contain the expanded key of 176 bytes 
     uint8_t expandedKey[NumberofBlocks * NumberofBlocks * (NumberofRounds + 1)];
     // passsing the key to be expanded by 176 bytes for all rounds and storing in expandedKey algorithm
     keyExpansion(key , expandedKey);
-
-    cout<<"Orignal Key"<<endl;
-    for(int i=0;i<16;i++)
-    {
-        cout<<std::hex<<(int)key[i]<<" ";
-    }
-
-    cout<<endl<<"Expanded Key"<<endl;
-    for(int i=0;i<176;i++)
-    {
-        cout<<std::hex<<(int)expandedKey[i]<<", ";
-    }
-    
     
     Mat afterSubByte = subByte(block);
-
-    cout<<endl<<"Orignal Data"<<endl;
-    for (int i=0; i<NumberofBlocks; i++){
-        for (int j=0; j<NumberofBlocks; j++){
-            cout<<std::hex<<(int)block.at<uint8_t>(i,j)<<' ';
-        }
-        cout<<endl;
-    } 
-    
-    cout<<"After Sub Bytes operation"<<endl;
-    for (int i=0; i<NumberofBlocks; i++){
-        for (int j=0; j<NumberofBlocks; j++){
-            cout<<std::hex<<(int)afterSubByte.at<uint8_t>(i,j)<<' ';
-        }
-        cout<<endl;
-    }   
-
     Mat afterShiftRows = shiftRows(afterSubByte);
-
-    cout<<"After Shift Rows operation"<<endl;
-    for (int i=0; i<NumberofBlocks; i++){
-        for (int j=0; j<NumberofBlocks; j++){
-            cout<<std::hex<<(int)afterShiftRows.at<uint8_t>(i,j)<<' ';
-        }
-        cout<<endl;
-    }
-
     Mat afterMixColumns = mixColumns(afterShiftRows);
-
-    cout<<"After Mix Columns operation"<<endl;
-    for (int i=0; i<NumberofBlocks; i++){
-        for (int j=0; j<NumberofBlocks; j++){
-            cout<<std::hex<<(int)afterMixColumns.at<uint8_t>(i,j)<<' ';
-        }
-        cout<<endl;
-    }
-
     Mat afterAddRoundKey = addRoundKey(afterMixColumns,expandedKey);
+}
 
-    cout<<"After Add Round Key operation"<<endl;
-    for (int i=0; i<NumberofBlocks; i++){
-        for (int j=0; j<NumberofBlocks; j++){
-            cout<<std::hex<<(int)afterAddRoundKey.at<uint8_t>(i,j)<<' ';
+void PrintMatrix(Mat matrix ,const char * sentence)
+{
+    cout<<endl<<sentence<<endl;
+    for(int row=0;row<NumberofBlocks;row++)
+    {
+        for(int col=0;col<NumberofBlocks;col++)
+        {
+            cout<<std::hex<<(int)matrix.at<uint8_t>(row,col)<<" ";
         }
         cout<<endl;
     }
+}
 
+void PrintArray(uint8_t * array , const char * sentence)
+{
+    cout<<endl<<sentence<<endl;
+    for (int i=0;i<16;i++)
+    {
+        cout<<std::hex<<(int)array[i]<<" ";
+    }
+}
+
+void PrintExpandedKey(uint8_t * array , const char * sentence)
+{
+    int index = 1;
+    cout<<endl<<sentence<<endl;
+    for (int i=0;i<176;i++)
+    {
+        cout<<std::hex<<(int)array[i]<<" ";
+        index++;
+        if(index % 16 == 0)
+        {
+            cout<<endl;
+        }
+    }
 }
