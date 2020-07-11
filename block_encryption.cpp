@@ -26,7 +26,23 @@ void block_encryption() {
         }
     } 
 
+    Mat afterSubByte = subByte(block);
+
+    cout<<"block of data before substitution"<<endl;
+    for (int i=0; i<numberofBlocks; i++){
+        for (int j=0; j<numberofBlocks; j++){
+            cout<<std::hex<<(int)block.at<uint8_t>(i,j)<<' ';
+        }
+        cout<<endl;
+    } 
     
+    cout<<"block of data after substitution"<<endl;
+    for (int i=0; i<numberofBlocks; i++){
+        for (int j=0; j<numberofBlocks; j++){
+            cout<<std::hex<<(int)afterSubByte.at<uint8_t>(i,j)<<' ';
+        }
+        cout<<endl;
+    }    
 
 
 }
