@@ -17,10 +17,10 @@ void block_encryption() {
     };
 
     uint8_t key[NumberofBlocks*NumberofBlocks] = {
-        0x00, 0x01, 0x02, 0x03,
-        0x04, 0x05, 0x06, 0x07, 
-        0x08, 0x09, 0x0a, 0x0b, 
-        0x0c, 0x0d, 0x0e, 0x0f,
+        0xa0, 0x88, 0x23, 0x2a,
+        0xfa, 0x54, 0xa3, 0x6c,
+        0xfe, 0x2c, 0x39, 0x76,
+        0x17, 0xb1, 0x39, 0x05
     };
 
     Mat block(NumberofBlocks,NumberofBlocks,CV_8UC1);
@@ -46,10 +46,6 @@ void block_encryption() {
     for(int i=0;i<176;i++)
     {
         cout<<std::hex<<(int)expandedKey[i]<<", ";
-        if(i % 16 == 0 && i != 0)
-        {
-            cout<<endl;
-        }
     }
     
     
@@ -90,4 +86,15 @@ void block_encryption() {
         }
         cout<<endl;
     }
+
+    Mat afterAddRoundKey = addRoundKey(afterMixColumns,expandedKey);
+
+    cout<<"After Add Round Key operation"<<endl;
+    for (int i=0; i<NumberofBlocks; i++){
+        for (int j=0; j<NumberofBlocks; j++){
+            cout<<std::hex<<(int)afterAddRoundKey.at<uint8_t>(i,j)<<' ';
+        }
+        cout<<endl;
+    }
+
 }

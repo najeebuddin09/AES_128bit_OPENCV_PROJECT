@@ -23,7 +23,7 @@ void keyExpansion(uint8_t [], uint8_t []);
 Mat subByte(Mat );
 Mat shiftRows(Mat );
 Mat mixColumns(Mat );
-Mat addRoundKey(Mat );
+Mat addRoundKey(Mat ,uint8_t *);
 
 // encryption method
 void block_encryption();
