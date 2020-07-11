@@ -24,10 +24,10 @@ void shiftRow(Mat state,int row,int shifts) {
     for(int i=0;i<shifts;i++)
     {
         x = state.at<uint8_t>(row,0);
-        for (int j=0;j<3;j++)
+        for (int j=0;j<NumberofBlocks - 1;j++)
         {
             state.at<uint8_t>(row,j) = state.at<uint8_t>(row,j+1);
         }
-        state.at<uint8_t>(row,3) = x;
+        state.at<uint8_t>(row,NumberofBlocks - 1) = x;
     }
 }

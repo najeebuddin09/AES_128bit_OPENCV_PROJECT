@@ -13,6 +13,8 @@
 using namespace std;
 using namespace cv;
 
+const int NumberofBlocks = 4;
+
 Mat subByte(Mat );
 Mat shiftRows(Mat ); 
 void block_encryption();
