@@ -14,5 +14,6 @@ using namespace std;
 using namespace cv;
 
 Mat subByte(Mat );
+Mat shiftRows(Mat ); 
 void block_encryption();
 

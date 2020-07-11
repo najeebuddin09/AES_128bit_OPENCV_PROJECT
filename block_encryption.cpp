@@ -42,7 +42,18 @@ void block_encryption() {
             cout<<std::hex<<(int)afterSubByte.at<uint8_t>(i,j)<<' ';
         }
         cout<<endl;
-    }    
+    }   
+
+    Mat afterShiftRows = shiftRows(afterSubByte);
+
+    cout<<"block of data after shift rows"<<endl;
+    for (int i=0; i<numberofBlocks; i++){
+        for (int j=0; j<numberofBlocks; j++){
+            cout<<std::hex<<(int)afterShiftRows.at<uint8_t>(i,j)<<' ';
+        }
+        cout<<endl;
+    }
+
 
 
 }
