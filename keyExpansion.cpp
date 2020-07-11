@@ -7,19 +7,14 @@
 #include "AES.hpp"
 #include "lookup_tables.hpp"
 
-void keyExpansion (uint8_t key[16]) {
+void keyExpansionSteps(uint8_t * , uint8_t );
+void rotateLastFourBytes (uint8_t * );
+void SboxValues (uint8_t * );
 
-    // used for key expansion 
-    // we have 10 rounds plus one initial so 11 total
-    // for 11 rounds 128 bits or 16 bytes keys have to be generated so total 176 bytes needed
-
-    uint8_t expandedKeys[NumberofBlocks * NumberofBlocks * (NumberofRounds + 1) ]; //(4*4 *(11)) = 176
+void keyExpansion (uint8_t key[16],uint8_t expandedKeys[176]) {
 
     uint8_t lastFourBytes[4];
-    uint8_t tempRCON[4];
-
-    int RCON = 1;
-
+    uint8_t RCON = 1;
 
     // now the first 16 bytes in the expanded key will be orignal key so copy the orignal key to expanded key
     for (int i=0;i<NumberofBlocks*NumberofBlocks;i++) 
@@ -67,14 +62,8 @@ void keyExpansion (uint8_t key[16]) {
 
        if (doneBytes % 16 == 0) 
        {
-           // now for rotation we will define a separate function
-           rotateLastFourBytes(lastFourBytes);
-           // now finding SBOX values 
-           SboxValues(lastFourBytes);
-           // now picking RCON column
-           rconPicker(tempRCON,RCON++);
-           // final step which xor ALL
-           xorAll(lastFourBytes , tempRCON);
+           keyExpansionSteps(lastFourBytes , RCON);
+           RCON++;
        }
 
 
@@ -84,11 +73,16 @@ void keyExpansion (uint8_t key[16]) {
            expandedKeys[doneBytes] = expandedKeys[doneBytes-16] ^ lastFourBytes[z];
            doneBytes++;
        }
-
        // now this process will repeat and all keys for all the rounds will be generated 
-
     }
+}
 
+void keyExpansionSteps(uint8_t * bytes , uint8_t rconiteration)
+{
+    rotateLastFourBytes(bytes);
+    SboxValues(bytes);
+
+    bytes[0] = bytes[0] ^ rcon[rconiteration];
 }
 
 // method for roatation of the last four bytes picked
@@ -109,27 +103,3 @@ void SboxValues (uint8_t * bytes)
         bytes[i] = sbox[bytes[i]/16][bytes[i]%16];
     }
 }
-
-// method for rcon picker
-void rconPicker (uint8_t * bytes , int value)
-{
-    bytes[0] = bytes[0] ^ rcon[value/16][value%16];
-    bytes[1] = 0;
-    bytes[2] = 0;
-    bytes[3] = 0;
-}
-
-// method to Xor all
-void xorAll (uint8_t * bytes , uint8_t * R)
-{
-    for(int i=0;i<NumberofBlocks;i++)
-    {
-        bytes[i] = bytes[i] ^ R[i];
-    }
-}
-
-
-
-
-
-
