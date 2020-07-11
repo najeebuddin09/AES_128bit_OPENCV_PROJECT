@@ -16,6 +16,13 @@ void block_encryption() {
         0xbe, 0x2b, 0x2a, 0x08
     };
 
+    uint8_t key[NumberofBlocks*NumberofBlocks] = {
+        0x2b, 0x28, 0xab, 0x09,
+        0x7e, 0xae, 0xf7, 0xcf,
+        0x15, 0xd2, 0x15, 0x4f,
+        0x16, 0xa6, 0x88, 0x3c
+    };
+
     Mat block(NumberofBlocks,NumberofBlocks,CV_8UC1);
 
     for (int i=0; i<NumberofBlocks; i++){
@@ -23,6 +30,9 @@ void block_encryption() {
             block.at<uint8_t>(i,j) = data[i][j];
         }
     } 
+
+    // passsing the key to be expanded by 176 bytes for all rounds
+    keyExpansion(key); 
 
     Mat afterSubByte = subByte(block);
 
