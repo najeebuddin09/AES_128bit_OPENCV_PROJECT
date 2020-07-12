@@ -28,7 +28,7 @@ Mat shiftRows(Mat);
 Mat mixColumns(Mat);
 
 // encryption method
-void block_encryption();
+Mat block_encryption(Mat,Mat);
 
 // AES Decryption Rounds methods
 Mat inverseSubByte(Mat);
@@ -36,4 +36,10 @@ Mat inverseShiftRows(Mat);
 Mat inverseMixColumns(Mat);
 
 // decryption method
-void block_decryption();
+Mat block_decryption(Mat,Mat);
+
+// Print functions methods
+void PrintMatrix(Mat, const char *);
+void PrintArray(uint8_t *, const char *);
+void PrintExpandedKey(uint8_t *, const char *);
+void dataCopytoMatrix(Mat, uint8_t array[4][4]);
