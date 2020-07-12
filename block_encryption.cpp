@@ -15,6 +15,7 @@ void dataCopytoMatrix(Mat, uint8_t array[4][4]);
 
 void block_encryption()
 {
+    // for AES one block of data will be 16 bytes or 4x4 2d array
     uint8_t data[NumberofBlocks][NumberofBlocks] = 
     {
         0x19, 0xa0, 0x9a, 0xe9,
@@ -46,40 +47,38 @@ void block_encryption()
     // 16 bytes of key or 128 bits of key
     uint8_t key[NumberofBlocks][NumberofBlocks] = 
     {
-        {0x2b, 0x28, 0xab, 0x09},
-        {0x7e, 0xae, 0xf7, 0xcf},
-        {0x15, 0xd2, 0x15, 0x4f},
-        {0x16, 0xa6, 0x88, 0x3c}
+        {0xa0, 0x88, 0x23, 0x2a},
+        {0xfa, 0x54, 0xa3, 0x6c},
+        {0xfe, 0x2c, 0x39, 0x76},
+        {0x17, 0xb1, 0x39, 0x05}
     };
 
+    // creating 2 open CV matrix of 4x4 size
     Mat block(NumberofBlocks, NumberofBlocks, CV_8UC1);
     Mat keyBlock(NumberofBlocks, NumberofBlocks, CV_8UC1);
 
+    // copying the data from 2d arrays to matrix
     dataCopytoMatrix(block, data);
     dataCopytoMatrix(keyBlock, key);
-
-    /*
-    for (int i=0; i<NumberofBlocks; i++){
-        for (int j=0; j<NumberofBlocks; j++){
-            block.at<uint8_t>(i,j) = data[i][j];
-        }
-    } 
-    */
+    
 
     // for 10 rounds and one initial round we will need different keys for encryption
     // so we will use AES keyExpansion concept to expand the key upto 176 bytes
-    // 11 rounds  = 16 bytes for each round
-    // here we declare a pointer expandedKey which will contain the expanded key of 176 bytes
+    // 11 rounds  = 16 bytes for each round but first 16 bytes will be orignal key which will
+    // be used in the inital Round
+    // here we declare expandedKey array which will contain the expanded key of 176 bytes
     uint8_t expandedKey[NumberofBlocks * NumberofBlocks * (NumberofRounds + 1)];
     // passsing the key to be expanded by 176 bytes for all rounds and storing in expandedKey algorithm
     keyExpansion(keyBlock, expandedKey);
 
     PrintExpandedKey(expandedKey, "The expanded key is");
 
+
     Mat afterSubByte = subByte(block);
     Mat afterShiftRows = shiftRows(afterSubByte);
     Mat afterMixColumns = mixColumns(afterShiftRows);
     Mat afterAddRoundKey = addRoundKey(afterMixColumns, expandedKey);
+    PrintMatrix(afterAddRoundKey,"After round key");
 }
 
 void PrintMatrix(Mat matrix, const char *sentence)
