@@ -19,11 +19,19 @@ const int NumberofRounds = 10;
 // first step key expansion
 void keyExpansion(Mat, uint8_t[]);
 
-// AES Rounds methods
+// method to be used for both encryption and decryption
+Mat addRoundKey(Mat, uint8_t *);
+
+// AES Encryption Rounds methods
 Mat subByte(Mat);
 Mat shiftRows(Mat);
 Mat mixColumns(Mat);
-Mat addRoundKey(Mat, uint8_t *);
 
 // encryption method
 void block_encryption();
+
+// AES Decryption Rounds methods
+Mat inverseSubByte(Mat );
+
+// decryption method
+void block_decryption();
