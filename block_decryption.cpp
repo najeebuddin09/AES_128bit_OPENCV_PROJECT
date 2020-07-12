@@ -45,19 +45,28 @@ void block_decryption()
     // we will need 176 bytes of expanded key 
     uint8_t expandedKey[NumberofBlocks * NumberofBlocks * (NumberofRounds + 1)];
 
+    //PrintMatrix(keyBlock,"The orignal key is");
+    //PrintExpandedKey(expandedKey, "The expanded key is");
+
     // passsing the key to be expanded by 176 bytes for all rounds and storing in expandedKey array
     // keyExpansion method wiil return a expanded key for all rounds consisting of 176 bytes
     keyExpansion(keyBlock, expandedKey);
 
     // for here we will decypt the ciphered data back to orignal data
+    // for decryption the expanded key will start from last
     Mat state = addRoundKey(cipherBlock,expandedKey+160);
+    PrintMatrix(state,"after Initial Round");
 
     for (int i=NumberofRounds-1;i>=1;i--)
     {
         state = inverseSubByte(state);
+        //PrintMatrix(state,"After Inverse Sub Byte");
         state = inverseShiftRows(state);
+        //PrintMatrix(state,"After Inverse Shift Rows");
         state = addRoundKey(state,expandedKey + i * 16);
+        //PrintMatrix(state,"After add round key");
         state = inverseMixColumns(state);
+        //PrintMatrix(state,"After Inverse Mix Columns");
     }  
 
     state = inverseSubByte(state);

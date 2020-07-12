@@ -105,7 +105,7 @@ void block_encryption()
         state = subByte(state);
         //PrintMatrix(state,"After Sub Byte");
         state = shiftRows(state);
-        //PrintMatrix(state,"After Shift rows");
+        //PrintMatrix(state,"After Shift Rows");
         state = mixColumns(state);
         //PrintMatrix(state,"After Mix Column");
         state = addRoundKey(state, expandedKey + i * 16 );
