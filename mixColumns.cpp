@@ -17,7 +17,7 @@ Mat mixColumns(Mat state)
     /*
 
         for mix columns we have to dot product each column of our state
-        or data with the matrix to get the each column which will be reult of mix columns
+        or data with the matrix show below to get the each column which will be reult of mix columns
         {
             2 , 3 , 1 , 1
             1 , 2 , 3 , 1
