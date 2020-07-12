@@ -16,12 +16,28 @@ void dataCopytoMatrix(Mat, uint8_t array[4][4]);
 void block_encryption()
 {
     // for AES one block of data will be 16 bytes or 4x4 2d array
-    uint8_t data[NumberofBlocks][NumberofBlocks] = 
-    {
+
+    /*
+        practice data
+
         0x19, 0xa0, 0x9a, 0xe9,
         0x3d, 0xf4, 0xc6, 0xf8,
         0xe3, 0xe2, 0x8d, 0x48,
         0xbe, 0x2b, 0x2a, 0x08
+
+        0x32, 0x88, 0x31, 0xe0,
+        0x43, 0x5a, 0x31, 0x37,
+        0xf6, 0x30, 0x98, 0x07,
+        0xa8, 0x8d, 0xa2, 0x34
+    
+    */
+
+    uint8_t data[NumberofBlocks][NumberofBlocks] = 
+    {
+        0x32, 0x88, 0x31, 0xe0,
+        0x43, 0x5a, 0x31, 0x37,
+        0xf6, 0x30, 0x98, 0x07,
+        0xa8, 0x8d, 0xa2, 0x34
     };
 
     /*
@@ -47,15 +63,16 @@ void block_encryption()
     // 16 bytes of key or 128 bits of key
     uint8_t key[NumberofBlocks][NumberofBlocks] = 
     {
-        {0xa0, 0x88, 0x23, 0x2a},
-        {0xfa, 0x54, 0xa3, 0x6c},
-        {0xfe, 0x2c, 0x39, 0x76},
-        {0x17, 0xb1, 0x39, 0x05}
+        0x2b, 0x28, 0xab, 0x09,
+        0x7e, 0xae, 0xf7, 0xcf,
+        0x15, 0xd2, 0x15, 0x4f,
+        0x16, 0xa6, 0x88, 0x3c
     };
 
     // creating 2 open CV matrix of 4x4 size
     Mat block(NumberofBlocks, NumberofBlocks, CV_8UC1);
     Mat keyBlock(NumberofBlocks, NumberofBlocks, CV_8UC1);
+    Mat afterAddRoundKey(NumberofBlocks, NumberofBlocks, CV_8UC1);
 
     // copying the data from 2d arrays to matrix
     dataCopytoMatrix(block, data);
@@ -68,17 +85,40 @@ void block_encryption()
     // be used in the inital Round
     // here we declare expandedKey array which will contain the expanded key of 176 bytes
     uint8_t expandedKey[NumberofBlocks * NumberofBlocks * (NumberofRounds + 1)];
-    // passsing the key to be expanded by 176 bytes for all rounds and storing in expandedKey algorithm
+
+    // passsing the key to be expanded by 176 bytes for all rounds and storing in expandedKey array
+    // keyExpansion method wiil return a expanded key for all rounds consisting of 176 bytes
+    
     keyExpansion(keyBlock, expandedKey);
+    
+    //PrintMatrix(keyBlock,"The orignal key is");
+    //PrintExpandedKey(expandedKey, "The expanded key is");
 
-    PrintExpandedKey(expandedKey, "The expanded key is");
+    // now from here we will call AES encryption rounds to encrypt our data
+    // first will be inital round where data and orignal cipher key will be XORED
+    Mat state = addRoundKey(block,expandedKey); 
+    PrintMatrix(state,"after Initial Round");
+
+    // total rounds = 10 by in one round Mix Column will not be called
+    for (int i=1; i <= NumberofRounds-1; i++)
+    {
+        state = subByte(state);
+        //PrintMatrix(state,"After Sub Byte");
+        state = shiftRows(state);
+        //PrintMatrix(state,"After Shift rows");
+        state = mixColumns(state);
+        //PrintMatrix(state,"After Mix Column");
+        state = addRoundKey(state, expandedKey + i * 16 );
+        //PrintMatrix(state,"After add round key");
+    }
+    
+    // final round without mix column
+    state = subByte(state);
+    state = shiftRows(state);
+    state = addRoundKey(state, expandedKey + 160);
 
 
-    Mat afterSubByte = subByte(block);
-    Mat afterShiftRows = shiftRows(afterSubByte);
-    Mat afterMixColumns = mixColumns(afterShiftRows);
-    Mat afterAddRoundKey = addRoundKey(afterMixColumns, expandedKey);
-    PrintMatrix(afterAddRoundKey,"After round key");
+    PrintMatrix(state,"The final cipher text is");
 }
 
 void PrintMatrix(Mat matrix, const char *sentence)

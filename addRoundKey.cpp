@@ -6,8 +6,15 @@
 
 #include "AES.hpp"
 
-Mat addRoundKey(Mat state, uint8_t *key)
+Mat addRoundKey(Mat state, uint8_t * key)
 {
+    cout<<endl<<endl<<"This is me printing from round key"<<endl;
+    for(int i=0;i<16;i++)
+    {
+       cout<<std::hex<<(int)key[i]<<" ";
+    }
+    cout<<endl<<endl<<"Finished"<<endl;
+
 
     Mat temp(NumberofBlocks, NumberofBlocks, CV_8UC1);
     temp = state;
@@ -15,7 +22,7 @@ Mat addRoundKey(Mat state, uint8_t *key)
     {
         for (int col = 0; col < NumberofBlocks; col++)
         {
-            temp.at<uint8_t>(row, col) = state.at<uint8_t>(row, col) ^ key[row + NumberofBlocks * col];
+            temp.at<uint8_t>(row, col) = state.at<uint8_t>(row, col) ^ key[row + 4 * col];
         }
     }
 
