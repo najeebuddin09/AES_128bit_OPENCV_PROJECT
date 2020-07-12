@@ -31,7 +31,8 @@ Mat mixColumns(Mat);
 void block_encryption();
 
 // AES Decryption Rounds methods
-Mat inverseSubByte(Mat );
+Mat inverseSubByte(Mat);
+Mat inverseShiftRows(Mat);
 
 // decryption method
 void block_decryption();
