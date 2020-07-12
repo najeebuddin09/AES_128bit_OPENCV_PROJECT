@@ -1,8 +1,8 @@
 g++ ^
                 -g ^
-                ./keyExpansion.cpp ./subByte.cpp ./shiftRows.cpp ./mixColumns.cpp ./addRoundKey.cpp ./block_encryption.cpp ./AES_Encoder.cpp ^
+                ./keyExpansion.cpp ./inverseSubByte.cpp ./inverseShiftRows.cpp ./inverseMixColumns.cpp ./addRoundKey.cpp ./block_decryption.cpp ./AES_Decoder.cpp ^
                 -o ^
-                output.exe ^
+                output_decrypt.exe ^
                 -I D:\OpenCV-MinGW-Build-OpenCV-4.1.1-x64\include ^
                 -L D:\OpenCV-MinGW-Build-OpenCV-4.1.1-x64\x64\mingw\bin ^
                 -llibopencv_calib3d411 ^
@@ -21,4 +21,4 @@ g++ ^
                 -llibopencv_video411 ^
                 -llibopencv_videoio411
                 :endcomment1
-.\output.exe
+.\output_decrypt.exe

@@ -49,8 +49,22 @@ void block_decryption()
     // keyExpansion method wiil return a expanded key for all rounds consisting of 176 bytes
     keyExpansion(keyBlock, expandedKey);
 
-    
+    // for here we will decypt the ciphered data back to orignal data
+    Mat state = addRoundKey(cipherBlock,expandedKey+160);
 
+    for (int i=NumberofRounds-1;i>=1;i--)
+    {
+        state = inverseSubByte(state);
+        state = inverseShiftRows(state);
+        state = addRoundKey(state,expandedKey + i * 16);
+        state = inverseMixColumns(state);
+    }  
+
+    state = inverseSubByte(state);
+    state = inverseShiftRows(state);
+    state = addRoundKey(state,expandedKey);
+
+    PrintMatrix(state,"The orignal text is");
 
 }
 
