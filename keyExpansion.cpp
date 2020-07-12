@@ -7,26 +7,46 @@
 #include "AES.hpp"
 #include "lookup_tables.hpp"
 
-void keyExpansionSteps(uint8_t * , uint8_t );
-void rotateLastFourBytes (uint8_t * );
-void SboxValues (uint8_t * );
+void rotateLastFourBytes(uint8_t *);
+void SboxValues(uint8_t *);
 
-void keyExpansion (uint8_t key[16],uint8_t expandedKeys[176]) {
+void keyExpansion(Mat keyState, uint8_t expandedKeys[176])
+{
 
     uint8_t lastFourBytes[4];
     uint8_t RCON = 1;
 
-    // now the first 16 bytes in the expanded key will be orignal key so copy the orignal key to expanded key
-    for (int i=0;i<NumberofBlocks*NumberofBlocks;i++) 
+    // here we have the key in Matrix so
+    // now converting the Matrix key to one d array where key will
+    // be arranged according to column wise so that we can pick it easily for key expansion porcess
+    int index = 0;
+    uint8_t singleArrayKey[16];
+    for (int col = 0; col < NumberofBlocks; col++)
     {
-        expandedKeys[i] = key[i];
+        for (int row = 0; row < NumberofBlocks; row++)
+        {
+            singleArrayKey[index] = keyState.at<uint8_t>(row, col);
+            index++;
+        }
     }
 
-    // now 16 bytes are already filled so we will start from 17 byte
+    // now the first 16 bytes in the expanded key will be orignal key so copy the orignal key to expanded key
+    for (int i = 0; i < NumberofBlocks * NumberofBlocks; i++)
+    {
+        expandedKeys[i] = singleArrayKey[i];
+    }
 
+    /* printing the orignal key in the expanded key
+    for (int i=0;i<16;i++) 
+    {
+        cout<<std::hex<<(int)expandedKeys[i]<<" ";
+    }
+    */
+
+    // now 16 bytes are already filled so we will start from 17 byte or 16 location
     int doneBytes = 16;
     int numberofBytes = 176;
-    while (doneBytes < numberofBytes )
+    while (doneBytes < numberofBytes)
     {
 
         /*
@@ -49,44 +69,67 @@ void keyExpansion (uint8_t key[16],uint8_t expandedKeys[176]) {
 
         */
 
-       // picking last 4 bytes
-       for (int x=0;x<4;x++)
-       {
-           lastFourBytes[x] = expandedKeys[x + doneBytes - 4]; 
-       }
+        // picking last 4 bytes
+        for (int x = 0; x < 4; x++)
+        {
+            lastFourBytes[x] = expandedKeys[x + doneBytes - 4];
+        }
 
-       
-       // we know that this step has to be only repeated at the start of new round key
-       // so we can generate a condition here that only repeat these steps when we are the start of new
-       // round key generation
+        // we know that this step has to be only repeated at the start of new round key
+        // so we can generate a condition here that only repeat these steps when we are the start of new
+        // round key generation
 
-       if (doneBytes % 16 == 0) 
-       {
-           keyExpansionSteps(lastFourBytes , RCON);
-           RCON++;
-       }
+        if (doneBytes % 16 == 0)
+        {
+            rotateLastFourBytes(lastFourBytes);
+            /* printing last four bytes after rotation
+            cout<<endl<<"Last four bytes or last column after rotaation "<<endl;
+    	    for (int i=0;i<4;i++) 
+    	    {
+        	    cout<<std::hex<<(int)lastFourBytes[i]<<" ";
+    	    }
+            */
+            SboxValues(lastFourBytes);
+            /* printing last four bytes after SBOX values
+            cout<<endl<<"Last four bytes or last column after sbox"<<endl;
+    	    for (int i=0;i<4;i++) 
+    	    {
+        	    cout<<std::hex<<(int)lastFourBytes[i]<<" ";
+    	    }
+            */
 
+            // picking the RCON value
+            lastFourBytes[0] = lastFourBytes[0] ^ rcon[RCON];
+            RCON++;
+            /* printing newly generated first column of the round key
+            cout<<endl<<"Last four bytes or last column after rcon"<<endl;
+    	    for (int i=0;i<4;i++) 
+    	    {
+        	    cout<<std::hex<<(int)lastFourBytes[i]<<" ";
+    	    }
+            */
+        }
 
-       // now generating last 3 bytes
-       for (uint8_t z=0;z<NumberofBlocks;z++)
-       {
-           expandedKeys[doneBytes] = expandedKeys[doneBytes-16] ^ lastFourBytes[z];
-           doneBytes++;
-       }
-       // now this process will repeat and all keys for all the rounds will be generated 
+        // now generating last 3 bytes
+        for (uint8_t z = 0; z < NumberofBlocks; z++)
+        {
+            expandedKeys[doneBytes] = expandedKeys[doneBytes - 16] ^ lastFourBytes[z];
+            doneBytes++;
+        }
+        /* prining the 176 bytes of keys generated at each step
+        cout<<endl<<"Expanded Keys after generating new row"<<endl;
+        for (int i=0;i<176;i++) 
+        {
+            cout<<std::hex<<(int)expandedKeys[i]<<" ";
+        }
+        */
+
+        // now this process will repeat and all keys for all the rounds will be generated
     }
 }
 
-void keyExpansionSteps(uint8_t * bytes , uint8_t rconiteration)
-{
-    rotateLastFourBytes(bytes);
-    SboxValues(bytes);
-
-    bytes[0] = bytes[0] ^ rcon[rconiteration];
-}
-
 // method for roatation of the last four bytes picked
-void rotateLastFourBytes (uint8_t * bytes)
+void rotateLastFourBytes(uint8_t *bytes)
 {
     uint8_t temp = bytes[0];
     bytes[0] = bytes[1];
@@ -96,10 +139,10 @@ void rotateLastFourBytes (uint8_t * bytes)
 }
 
 // method for Sbox values
-void SboxValues (uint8_t * bytes)
+void SboxValues(uint8_t *bytes)
 {
-    for (int i=0;i<NumberofBlocks;i++)
+    for (int i = 0; i < NumberofBlocks; i++)
     {
-        bytes[i] = sbox[bytes[i]/16][bytes[i]%16];
+        bytes[i] = sbox[bytes[i] / 16][bytes[i] % 16];
     }
 }

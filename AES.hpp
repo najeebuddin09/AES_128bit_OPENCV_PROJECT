@@ -17,14 +17,13 @@ const int NumberofBlocks = 4;
 const int NumberofRounds = 10;
 
 // first step key expansion
-void keyExpansion(uint8_t [], uint8_t []);
+void keyExpansion(Mat, uint8_t[]);
 
-// AES Rounds methods 
-Mat subByte(Mat );
-Mat shiftRows(Mat );
-Mat mixColumns(Mat );
-Mat addRoundKey(Mat ,uint8_t *);
+// AES Rounds methods
+Mat subByte(Mat);
+Mat shiftRows(Mat);
+Mat mixColumns(Mat);
+Mat addRoundKey(Mat, uint8_t *);
 
 // encryption method
 void block_encryption();
-
