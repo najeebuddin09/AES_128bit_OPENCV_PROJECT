@@ -24,7 +24,7 @@ Mat block_decryption(Mat data,Mat key)
     // for here we will decypt the ciphered data back to orignal data
     // for decryption the expanded key will start from last
     Mat state = addRoundKey(data,expandedKey+160);
-    PrintMatrix(state,"after Initial Round");
+    //PrintMatrix(state,"after Initial Round");
 
     for (int i=NumberofRounds-1;i>=1;i--)
     {

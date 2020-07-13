@@ -48,3 +48,10 @@ Mat inverseMixColumns(Mat);
 // decryption method
 Mat block_decryption(Mat,Mat);
 
+// file encryption methods
+void file_encryption(uint8_t [],Mat ,uint8_t []);
+void file_Encryption_ECB();
+
+// file decryption methods
+void file_decryption(uint8_t [],Mat ,uint8_t []);
+void file_Decryption_ECB();
