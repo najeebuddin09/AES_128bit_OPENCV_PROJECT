@@ -1,6 +1,6 @@
 g++ ^
                 -g ^
-                ./keyExpansion.cpp ./subByte.cpp ./shiftRows.cpp ./mixColumns.cpp ./addRoundKey.cpp ./block_encryption.cpp ./AES_Encoder.cpp ^
+                ./printFunctions.cpp ./keyExpansion.cpp ./subByte.cpp ./shiftRows.cpp ./mixColumns.cpp ./addRoundKey.cpp ./block_encryption.cpp ./AES_Encoder.cpp ^
                 -o ^
                 output_encrypt.exe ^
                 -I D:\OpenCV-MinGW-Build-OpenCV-4.1.1-x64\include ^

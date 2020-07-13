@@ -5,16 +5,24 @@
 */
 
 // here all main libraries and different methods will be added that will be used in the project
-#include <opencv2/opencv.hpp>
-#include <stdint.h>
-#include <iostream>
-#include <sstream>
+#include <opencv2/opencv.hpp> // open cv library
+#include <stdint.h> // for uint8_t types library
+#include <iostream> // input output stream library
+#include <sstream> // providing string stream classes library
+#include <fstream> // for file handling library
+#include <string> // for string operations
 
 using namespace std;
 using namespace cv;
 
 const int NumberofBlocks = 4;
 const int NumberofRounds = 10;
+
+// Print functions methods
+void PrintMatrix(Mat, const char *);
+void PrintArray(uint8_t *, const char *);
+void PrintExpandedKey(uint8_t *, const char *);
+void dataCopytoMatrix(Mat, uint8_t array[4][4]);
 
 // first step key expansion
 void keyExpansion(Mat, uint8_t[]);
@@ -38,8 +46,3 @@ Mat inverseMixColumns(Mat);
 // decryption method
 Mat block_decryption(Mat,Mat);
 
-// Print functions methods
-void PrintMatrix(Mat, const char *);
-void PrintArray(uint8_t *, const char *);
-void PrintExpandedKey(uint8_t *, const char *);
-void dataCopytoMatrix(Mat, uint8_t array[4][4]);

@@ -9,6 +9,37 @@
 int main(int argc, char **argv)
 {
 
+    
+    stringstream fileString;
+    string fileData;
+	ifstream userData;
+	userData.open("InputFile.txt", ios::in | ios::binary);
+    if (userData.is_open()) 
+    {
+        fileString << userData.rdbuf();
+        userData.close();
+    }
+    
+    // displaying data stored in array
+    fileData = fileString.str();
+
+    // counting all characters in the file
+    int x = 0;
+    while(fileData[x] != '\0')
+    {
+        x++;
+    }
+
+    // declaring array for the data
+    uint8_t data[x];
+    
+    for (int i=0;i<sizeof(data);i++)
+    {
+        data[i] = fileData[i];
+    }
+    
+
+
     // for AES one block of data will be 16 bytes or 4x4 2d array
 
     /*
@@ -24,7 +55,6 @@ int main(int argc, char **argv)
         0xf6, 0x30, 0x98, 0x07,
         0xa8, 0x8d, 0xa2, 0x34
     
-    */
 
     uint8_t data[NumberofBlocks][NumberofBlocks] = 
     {
@@ -52,7 +82,7 @@ int main(int argc, char **argv)
         0x08, 0x09, 0x0a, 0x0b, 
         0x0c, 0x0d, 0x0e, 0x0f
 
-    */
+        
 
     // 16 bytes of key or 128 bits of key
     uint8_t key[NumberofBlocks][NumberofBlocks] = 
@@ -63,15 +93,25 @@ int main(int argc, char **argv)
         0x16, 0xa6, 0x88, 0x3c
     };
 
+    // for CBC Mode declaing IV matrix
+    uint8_t iv[NumberofBlocks][NumberofBlocks] = 
+    {
+        0x0f, 0x0f, 0x0f, 0x0f,
+        0x0f, 0x0f, 0x0f, 0x0f,
+        0x0f, 0x0f, 0x0f, 0x0f,
+        0x0f, 0x0f, 0x0f, 0x0f,
+    };
+
     Mat block(NumberofBlocks, NumberofBlocks, CV_8UC1);
     Mat keyBlock(NumberofBlocks, NumberofBlocks, CV_8UC1);
+    Mat ivBlock(NumberofBlocks,NumberofBlocks,CV_8UC1);
 
     dataCopytoMatrix(block,data);
     dataCopytoMatrix(keyBlock,key);
+    dataCopytoMatrix(ivBlock,iv);
     
     Mat encrypted_data = block_encryption(block,keyBlock);
 
     PrintMatrix(encrypted_data,"The ciphered value is");
-
-    return 0;
+    */
 }
