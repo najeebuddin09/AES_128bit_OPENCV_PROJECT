@@ -25,6 +25,7 @@ void PrintArray(uint8_t *, const char *);
 void PrintArrayWithRange(uint8_t *, const char *,int);
 void PrintExpandedKey(uint8_t *, const char *);
 void dataCopytoMatrix(Mat, uint8_t array[4][4]);
+void matrixCopytoArray(Mat,uint8_t []);
 
 // first step key expansion
 void keyExpansion(Mat, uint8_t[]);
@@ -49,9 +50,9 @@ Mat inverseMixColumns(Mat);
 Mat block_decryption(Mat,Mat);
 
 // file encryption methods
-void file_encryption(uint8_t [],Mat ,uint8_t []);
+Mat file_encryption(uint8_t [],Mat ,uint8_t []);
 void file_Encryption_ECB();
 
 // file decryption methods
-void file_decryption(uint8_t [],Mat ,uint8_t []);
+Mat file_decryption(uint8_t [],Mat ,uint8_t []);
 void file_Decryption_ECB();

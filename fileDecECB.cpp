@@ -87,7 +87,7 @@ void file_Decryption_ECB()
     }
 }
 
-void file_decryption(uint8_t data[],Mat key,uint8_t plain[])
+Mat file_decryption(uint8_t data[],Mat key,uint8_t plain[])
 {
     // declaring 2d array to store 16 bytes of ciphered data recieved to be decrypted
     uint8_t cipherText[NumberofBlocks][NumberofBlocks];
@@ -112,15 +112,9 @@ void file_decryption(uint8_t data[],Mat key,uint8_t plain[])
     Mat decrypted_data = block_decryption(cipherBlock,key);
     // PrintMatrix(decrypted_data,"The orignal text is : ");
 
-    int ind = 0;
-    for (int row=0;row<NumberofBlocks;row++)
-    {
-        for(int col=0;col<NumberofBlocks;col++)
-        {
-            plain[ind] = decrypted_data.at<uint8_t>(row,col);
-            ind++;
-        }
-    }   
+    matrixCopytoArray(decrypted_data,plain);
+
+    return decrypted_data;   
 }
 
 

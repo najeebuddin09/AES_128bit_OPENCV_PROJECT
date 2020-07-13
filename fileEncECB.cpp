@@ -127,7 +127,7 @@ void file_Encryption_ECB()
     }
 }
 
-void file_encryption(uint8_t data[],Mat key,uint8_t cipher[])
+Mat file_encryption(uint8_t data[],Mat key,uint8_t cipher[])
 {
     // declaring 2d array to store 16 bytes of data recieved to be encrypted
     uint8_t plainText[NumberofBlocks][NumberofBlocks];
@@ -152,15 +152,24 @@ void file_encryption(uint8_t data[],Mat key,uint8_t cipher[])
     Mat encrypted_data = block_encryption(block,key);
     //PrintMatrix(encrypted_data,"The cipher text is : ");
 
-    int ind = 0;
-    for (int row=0;row<NumberofBlocks;row++)
+    matrixCopytoArray(encrypted_data,cipher);
+
+    return encrypted_data;
+}
+/*
+Mat XOR_CBC(Mat iv, Mat plainText)
+{
+    Mat temp(NumberofBlocks, NumberofBlocks, CV_8UC1);
+
+    for (int row = 0; row < NumberofBlocks; row++)
     {
-        for(int col=0;col<NumberofBlocks;col++)
+        for (int col = 0; col < NumberofBlocks; col++)
         {
-            cipher[ind] = encrypted_data.at<uint8_t>(row,col);
-            ind++;
+            temp.at<uint8_t>(row, col) = plainText.at<uint8_t>(row, col) ^ iv.at<uint8_t>(row, col);
         }
-    }   
+    }
+
+    return temp;
 }
 
 // for AES one block of data will be 16 bytes or 4x4 2d array

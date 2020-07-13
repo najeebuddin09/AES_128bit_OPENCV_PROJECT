@@ -56,3 +56,16 @@ void dataCopytoMatrix(Mat mat, uint8_t array[4][4])
         }
     }
 }
+
+void matrixCopytoArray(Mat ciphered,uint8_t cipher[])
+{
+    int ind = 0;
+    for (int row=0;row<NumberofBlocks;row++)
+    {
+        for(int col=0;col<NumberofBlocks;col++)
+        {
+            cipher[ind] = ciphered.at<uint8_t>(row,col);
+            ind++;
+        }
+    } 
+}
