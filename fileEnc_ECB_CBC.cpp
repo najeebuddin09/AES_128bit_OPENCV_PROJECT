@@ -156,7 +156,7 @@ Mat file_encryption(uint8_t data[],Mat key,uint8_t cipher[])
 
     return encrypted_data;
 }
-/*
+
 Mat XOR_CBC(Mat iv, Mat plainText)
 {
     Mat temp(NumberofBlocks, NumberofBlocks, CV_8UC1);

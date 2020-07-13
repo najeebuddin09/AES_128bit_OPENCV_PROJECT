@@ -52,6 +52,8 @@ Mat block_decryption(Mat,Mat);
 // file encryption methods
 Mat file_encryption(uint8_t [],Mat ,uint8_t []);
 void file_Encryption_ECB();
+// for CBC mode XOR of IV and Plain Text
+Mat XOR_CBC(Mat iv, Mat plainText);
 
 // file decryption methods
 Mat file_decryption(uint8_t [],Mat ,uint8_t []);
