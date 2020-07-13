@@ -16,7 +16,16 @@ void PrintMatrix(Mat matrix, const char *sentence)
 void PrintArray(uint8_t *array, const char *sentence)
 {
     cout << endl << sentence << endl;
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < NumberofBytes; i++)
+    {
+        cout << std::hex << (int)array[i] << " ";
+    }
+}
+
+void PrintArrayWithRange(uint8_t *array, const char *sentence,int range)
+{
+    cout << endl << sentence << endl;
+    for (int i = 0; i < range; i++)
     {
         cout << std::hex << (int)array[i] << " ";
     }

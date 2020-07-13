@@ -22,6 +22,7 @@ const int NumberofBytes = NumberofBlocks * NumberofBlocks;
 // Print functions methods
 void PrintMatrix(Mat, const char *);
 void PrintArray(uint8_t *, const char *);
+void PrintArrayWithRange(uint8_t *, const char *,int);
 void PrintExpandedKey(uint8_t *, const char *);
 void dataCopytoMatrix(Mat, uint8_t array[4][4]);
 

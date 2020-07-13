@@ -6,6 +6,8 @@
 
 #include "AES.hpp"
 
+void data_encryption(uint8_t [],Mat ,uint8_t []);
+
 int main(int argc, char **argv)
 {
 
@@ -66,6 +68,8 @@ int main(int argc, char **argv)
 
     // now defining new array for the adjusted data so it can be encrypted correctly
     uint8_t * adjustedData = new uint8_t [adjustedLength];
+    // encryptedData array will contain the ciphered or encrypted data
+    uint8_t * encryptedData = new uint8_t [adjustedLength];
 
     for (int i=0;i<adjustedLength;i++)
     {
@@ -88,8 +92,31 @@ int main(int argc, char **argv)
     }
     */
 
-    // for AES one block of data will be 16 bytes or 4x4 2d array
+    // declaring our key
+    // 16 bytes of key or 128 bits of key
+    uint8_t key[NumberofBlocks][NumberofBlocks] = 
+    {
+        0x2b, 0x28, 0xab, 0x09,
+        0x7e, 0xae, 0xf7, 0xcf,
+        0x15, 0xd2, 0x15, 0x4f,
+        0x16, 0xa6, 0x88, 0x3c
+    };
 
+    Mat keyBlock(NumberofBlocks, NumberofBlocks, CV_8UC1);
+    dataCopytoMatrix(keyBlock,key);
+
+
+    // now calling the encryption function to encrypt our text
+    for(int i=0;i<adjustedLength;i+=NumberofBytes)
+    {
+        data_encryption(adjustedData + i , keyBlock , encryptedData + i);
+    }
+
+    // now displaying the encrypted data 
+    PrintArrayWithRange(encryptedData,"The encrypted data is : ",adjustedLength);
+
+    // for AES one block of data will be 16 bytes or 4x4 2d array
+    
     /*
         practice data
 
@@ -162,4 +189,42 @@ int main(int argc, char **argv)
 
     PrintMatrix(encrypted_data,"The ciphered value is");
     */
+}
+
+
+void data_encryption(uint8_t data[],Mat key,uint8_t cipher[])
+{
+    // declaring 2d array to store 16 bytes of data recieved to be encrypted
+    uint8_t plainText[NumberofBlocks][NumberofBlocks];
+
+    int index = 0;
+    for (int row=0;row<NumberofBlocks;row++)
+    {
+        for(int col=0;col<NumberofBlocks;col++)
+        {
+            plainText[row][col] = data[index];
+            index++;
+        }
+    }
+
+    // declaring Mat to copy the 16 bytes of data
+    Mat block(NumberofBlocks, NumberofBlocks, CV_8UC1);
+    
+    // copying data
+    dataCopytoMatrix(block,plainText);
+
+    // encrypting data
+    Mat encrypted_data = block_encryption(block,key);
+    PrintMatrix(encrypted_data,"The cipher text is : ");
+
+    int ind = 0;
+    for (int row=0;row<NumberofBlocks;row++)
+    {
+        for(int col=0;col<NumberofBlocks;col++)
+        {
+            cipher[ind] = encrypted_data.at<uint8_t>(row,col);
+            ind++;
+        }
+    }   
+
 }
