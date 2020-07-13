@@ -10,7 +10,6 @@ void data_encryption(uint8_t [],Mat ,uint8_t []);
 
 int main(int argc, char **argv)
 {
-
     
     stringstream fileString;
     string fileData;
@@ -19,8 +18,9 @@ int main(int argc, char **argv)
     if (userData.is_open()) 
     {
         fileString << userData.rdbuf();
-        userData.close();
     }
+
+    userData.close();
     
     // displaying data stored in array
     fileData = fileString.str();
@@ -67,9 +67,9 @@ int main(int argc, char **argv)
     //cout<<endl<<"The adjusted length is "<<adjustedLength<<endl;
 
     // now defining new array for the adjusted data so it can be encrypted correctly
-    uint8_t * adjustedData = new uint8_t [adjustedLength];
+    uint8_t adjustedData[adjustedLength];
     // encryptedData array will contain the ciphered or encrypted data
-    uint8_t * encryptedData = new uint8_t [adjustedLength];
+    uint8_t encryptedData[adjustedLength];
 
     for (int i=0;i<adjustedLength;i++)
     {
@@ -117,17 +117,18 @@ int main(int argc, char **argv)
 
     // Write the encrypted string out to file ""
 	ofstream outfile;
-	outfile.open("encryptedText.txt", ios::out | ios::binary);
+	outfile.open("EncodedFile.txt", ios::out | ios::binary);
 	if (outfile.is_open())
 	{
-		outfile << encryptedData;
+		outfile.write((char *)encryptedData,adjustedLength);
 		outfile.close();
-		cout << "Wrote encrypted message to file" << endl;
+		cout << endl << "Wrote encrypted message to file" << endl;
 	}
 	else
     {
         cout << "Unable to open file";
-    } 
+    }
+    
 }
 
 
@@ -165,7 +166,6 @@ void data_encryption(uint8_t data[],Mat key,uint8_t cipher[])
             ind++;
         }
     }   
-
 }
 
 // for AES one block of data will be 16 bytes or 4x4 2d array

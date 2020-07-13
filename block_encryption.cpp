@@ -28,7 +28,7 @@ Mat block_encryption(Mat data,Mat key)
     // now from here we will call AES encryption rounds to encrypt our data
     // first will be inital round where data and orignal cipher key will be XORED
     Mat state = addRoundKey(data,expandedKey); 
-    PrintMatrix(state,"after Initial Round");
+    //PrintMatrix(state,"after Initial Round");
 
     // total rounds = 10 by in one round Mix Column will not be called
     for (int i=1; i <= NumberofRounds-1; i++)
