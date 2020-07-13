@@ -17,6 +17,7 @@ using namespace cv;
 
 const int NumberofBlocks = 4;
 const int NumberofRounds = 10;
+const int NumberofBytes = NumberofBlocks * NumberofBlocks;
 
 // Print functions methods
 void PrintMatrix(Mat, const char *);

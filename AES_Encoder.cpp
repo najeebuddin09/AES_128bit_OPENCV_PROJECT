@@ -37,8 +37,56 @@ int main(int argc, char **argv)
     {
         data[i] = fileData[i];
     }
-    
 
+    unsigned int orignalLength = strlen((const char *) data);
+    // cout<<endl<<"The length of data is "<<orignalLength<<endl;
+
+    /* 
+        // printing the hex of data 
+        // da for new line
+
+    for(int i=0;i<sizeof(data);i++)
+    {
+        cout<<std::hex<<(int)data[i];
+    }
+    */
+
+    // in AES we encrypt or decrypt 16 bytes of block at one time so 
+    // our data must be a multiplier of 16 and if not then we will add
+    // dummy zero data at the end to make the data multiplier of 16
+
+    int adjustedLength = orignalLength;
+
+    if((adjustedLength % 16) != 0)
+    {
+        adjustedLength = (adjustedLength/NumberofBytes+1)*NumberofBytes;
+    }
+
+    //cout<<endl<<"The adjusted length is "<<adjustedLength<<endl;
+
+    // now defining new array for the adjusted data so it can be encrypted correctly
+    uint8_t * adjustedData = new uint8_t [adjustedLength];
+
+    for (int i=0;i<adjustedLength;i++)
+    {
+        // here we will add 0 in the adjusted length
+        if(i >= orignalLength)
+        {
+            adjustedData[i] = 0;
+        }
+        else
+        {
+            adjustedData[i] = data[i];
+        }
+    }
+
+    // displaying new data after adjusting and adding zeros
+    /*
+    for(int i=0;i<adjustedLength;i++)
+    {
+        cout<<std::hex<<(int)adjustedData[i];
+    }
+    */
 
     // for AES one block of data will be 16 bytes or 4x4 2d array
 
