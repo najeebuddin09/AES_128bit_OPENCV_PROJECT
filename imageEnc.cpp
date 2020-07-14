@@ -7,8 +7,6 @@
 
 #include "AES.hpp"
 
-void encryptBlock(Mat ,Mat );
-
 void imageEnc ()
 {
     // 16 bytes of key or 128 bits of key
@@ -43,19 +41,15 @@ void imageEnc ()
             Mat tile = InputImage(cv::Range(row,min(row+NumberofBlocks,InputImage.rows)),
                         cv::Range(col,min(col+NumberofBlocks,InputImage.cols)));
             
-            encryptBlock(tile,keyBlock);
+            tile = block_encryption(tile,keyBlock);
         }        
     }
 
-    imwrite("EncodedImage.jpg",InputImage);
+    Mat EncodedImage = InputImage;
+    imwrite("EncodedImage.jpg",EncodedImage);
 
     imshow("InputImage",Image);
-    imshow("EncryptedImage",InputImage);
+    imshow("EncryptedImage",EncodedImage);
 
     waitKey();
-}
-
-void encryptBlock(Mat data,Mat key)
-{
-    data = block_encryption(data,key);
 }

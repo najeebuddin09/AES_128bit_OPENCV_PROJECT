@@ -7,8 +7,6 @@
 
 #include "AES.hpp"
 
-void decryptBlock(Mat ,Mat );
-
 void imageDec ()
 {
     // 16 bytes of key or 128 bits of key
@@ -31,7 +29,8 @@ void imageDec ()
     Mat EncodedImage = imread("EncodedImage.jpg",IMREAD_GRAYSCALE);
 
     // calculating total pixels in the image
-    int totalPixels = EncodedImage.rows * EncodedImage.cols;
+
+    //int totalPixels = EncodedImage.rows * EncodedImage.cols;
 
     // now reading 4x4 blocs from the image 
     for (int row=0;row<EncodedImage.rows;row+=NumberofBlocks)
@@ -42,18 +41,16 @@ void imageDec ()
             Mat tile = EncodedImage(cv::Range(row,min(row+NumberofBlocks,EncodedImage.rows)),
                         cv::Range(col,min(col+NumberofBlocks,EncodedImage.cols)));
             
-            decryptBlock(tile,keyBlock);
+            Mat decrypt = block_decryption(tile,keyBlock);
+            tile = tile + decrypt;
         }        
     }
 
-    imwrite("DecodedImage.jpg",EncodedImage);
+    Mat decryptedImage = EncodedImage;
 
-    imshow("DecryptedImage",EncodedImage);
+    imwrite("DecodedImage.jpg",decryptedImage);
 
+    imshow("DecryptedImage",decryptedImage);
     waitKey();
-}
 
-void decryptBlock(Mat data,Mat key)
-{
-    data = block_decryption(data,key);
 }
