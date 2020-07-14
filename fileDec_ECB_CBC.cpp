@@ -27,16 +27,19 @@ void file_Decryption_ECB()
     {
         x++;
     }
+    //cout<<"The x value is "<<x<<endl;
 
+    int limit = x;
     // declaring array for the data
-    uint8_t cipheredData[x];
+    uint8_t cipheredData[limit];
     
-    for (int i=0;i<sizeof(cipheredData);i++)
+    for (int i=0;i<limit;i++)
     {
         cipheredData[i] = cipherData[i];
     }
 
-    unsigned int cipherLength = strlen((const char *) cipheredData);
+    int cipherLength = limit;
+    //cout<<endl<<"The cipher length is "<<cipherLength<<endl;
     //cipherLength = cipherLength - 1;
 
     uint8_t decryptedData[cipherLength];
@@ -109,15 +112,17 @@ void file_Decryption_CBC()
         x++;
     }
 
+    int limit = x;
+
     // declaring array for the data
-    uint8_t cipheredData[x];
+    uint8_t cipheredData[limit];
     
-    for (int i=0;i<sizeof(cipheredData);i++)
+    for (int i=0;i<limit;i++)
     {
         cipheredData[i] = cipherData[i];
     }
 
-    unsigned int cipherLength = strlen((const char *) cipheredData);
+    int cipherLength = limit;
     //cipherLength = cipherLength - 1;
     uint8_t decryptedData[cipherLength];
 
