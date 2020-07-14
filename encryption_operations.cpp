@@ -4,9 +4,60 @@
     CS Project
 */
 
+// This file contains all encryption operations
+// SubBytes ShiftRows Mix Columns and Add Round Key
+
 #include "AES.hpp"
 #include "lookup_tables.hpp"
 
+// method to shift row
+void shiftRow(Mat, int, int);
+
+// sub Byte Method
+Mat subByte(Mat state)
+{
+
+    Mat temp(NumberofBlocks, NumberofBlocks, CV_8UC1);
+    uint8_t x;
+    for (int i = 0; i < NumberofBlocks; i++)
+    {
+        for (int j = 0; j < NumberofBlocks; j++)
+        {
+            x = state.at<uint8_t>(i, j);
+            temp.at<uint8_t>(i, j) = sbox[x / 16][x % 16];
+        }
+    }
+    return temp;
+}
+
+// shift rows method
+Mat shiftRows(Mat state)
+{
+
+    shiftRow(state, 1, 1);
+    shiftRow(state, 2, 2);
+    shiftRow(state, 3, 3);
+
+    return state;
+}
+
+// method to shift each row of the mat 
+void shiftRow(Mat state, int row, int shifts)
+{
+
+    uint8_t x;
+    for (int i = 0; i < shifts; i++)
+    {
+        x = state.at<uint8_t>(row, 0);
+        for (int j = 0; j < NumberofBlocks - 1; j++)
+        {
+            state.at<uint8_t>(row, j) = state.at<uint8_t>(row, j + 1);
+        }
+        state.at<uint8_t>(row, NumberofBlocks - 1) = x;
+    }
+}
+
+// Mix Columns method
 Mat mixColumns(Mat state)
 {
 
@@ -54,5 +105,29 @@ Mat mixColumns(Mat state)
     }
 
     // returning the newly Mat
+    return temp;
+}
+
+// add round key method
+Mat addRoundKey(Mat state, uint8_t * key)
+{
+    /*
+    cout<<endl<<endl<<"Key Round Picking 16 bytes"<<endl;
+    for(int i=0;i<16;i++)
+    {
+       cout<<std::hex<<(int)key[i]<<" ";
+    }
+    */
+    // simply XOR each key element with the state mat
+    Mat temp(NumberofBlocks, NumberofBlocks, CV_8UC1);
+    temp = state;
+    for (int row = 0; row < NumberofBlocks; row++)
+    {
+        for (int col = 0; col < NumberofBlocks; col++)
+        {
+            temp.at<uint8_t>(row, col) = state.at<uint8_t>(row, col) ^ key[row + 4 * col];
+        }
+    }
+
     return temp;
 }
