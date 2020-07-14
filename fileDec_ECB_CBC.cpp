@@ -114,6 +114,8 @@ void file_Decryption_CBC()
 
     int limit = x;
 
+    //cout<<"The length value is "<<limit<<endl;
+
     // declaring array for the data
     uint8_t cipheredData[limit];
     
@@ -123,7 +125,7 @@ void file_Decryption_CBC()
     }
 
     int cipherLength = limit;
-    //cipherLength = cipherLength - 1;
+
     uint8_t decryptedData[cipherLength];
 
     /* 
