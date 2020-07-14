@@ -237,13 +237,14 @@ void file_Encryption_CBC()
     dataCopytoMatrix(ivBlock,iv);
 
     Mat newivBlock(NumberofBlocks,NumberofBlocks,CV_8UC1);
+    uint8_t encrypted[NumberofBytes];
 
     // now calling the encryption function to encrypt our text
     for(int i=0;i<adjustedLength;i+=NumberofBytes)
     {
         newivBlock = XOR_CBC(ivBlock,adjustedData+i);
-        matrixCopytoArray(newivBlock,adjustedData+i);
-        ivBlock = file_encryption(adjustedData + i , keyBlock , encryptedData + i);
+        matrixCopytoArray(newivBlock,encrypted);
+        ivBlock = file_encryption(encrypted , keyBlock , encryptedData + i);
     }
 
     // now displaying the encrypted data 

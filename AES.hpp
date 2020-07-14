@@ -63,4 +63,7 @@ Mat XOR_CBC(Mat ,uint8_t []);
 
 // file decryption methods
 Mat file_decryption(uint8_t [],Mat ,uint8_t []);
+// ECB Mode
 void file_Decryption_ECB();
+// CBC Mode
+void file_Decryption_CBC();
