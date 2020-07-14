@@ -127,20 +127,149 @@ void file_Encryption_ECB()
     }
 }
 
+void file_Encryption_CBC()
+{
+    stringstream fileString;
+    string fileData;
+	ifstream userData;
+	userData.open("InputFile.txt", ios::in | ios::binary);
+    if (userData.is_open()) 
+    {
+        fileString << userData.rdbuf();
+    }
+
+    userData.close();
+    
+    // displaying data stored in array
+    fileData = fileString.str();
+
+    // counting all characters in the file
+    int x = 0;
+    while(fileData[x] != '\0')
+    {
+        x++;
+    }
+
+    // declaring array for the data
+    uint8_t data[x];
+    
+    for (int i=0;i<sizeof(data);i++)
+    {
+        data[i] = fileData[i];
+    }
+
+    unsigned int orignalLength = strlen((const char *) data);
+    // cout<<endl<<"The length of data is "<<orignalLength<<endl;
+
+    /* 
+        // printing the hex of data 
+        // da for new line
+
+    for(int i=0;i<sizeof(data);i++)
+    {
+        cout<<std::hex<<(int)data[i];
+    }
+    */
+
+    // in AES we encrypt or decrypt 16 bytes of block at one time so 
+    // our data must be a multiplier of 16 and if not then we will add
+    // dummy zero data at the end to make the data multiplier of 16
+
+    int adjustedLength = orignalLength;
+
+    if((adjustedLength % 16) != 0)
+    {
+        adjustedLength = (adjustedLength/NumberofBytes+1)*NumberofBytes;
+    }
+
+    //cout<<endl<<"The adjusted length is "<<adjustedLength<<endl;
+
+    // now defining new array for the adjusted data so it can be encrypted correctly
+    uint8_t adjustedData[adjustedLength];
+    // encryptedData array will contain the ciphered or encrypted data
+    uint8_t encryptedData[adjustedLength];
+
+    for (int i=0;i<adjustedLength;i++)
+    {
+        // here we will add 0 in the adjusted length
+        if(i >= orignalLength)
+        {
+            adjustedData[i] = 0;
+        }
+        else
+        {
+            adjustedData[i] = data[i];
+        }
+    }
+
+    // displaying new data after adjusting and adding zeros
+    /*
+    for(int i=0;i<adjustedLength;i++)
+    {
+        cout<<std::hex<<(int)adjustedData[i];
+    }
+    */
+
+    // Now this is CBC Mode so we will need a initialization vector which
+    // will be XORed with the data
+    // for CBC Mode declaing IV matrix
+    uint8_t iv[NumberofBlocks][NumberofBlocks] = 
+    {
+        0x0f, 0x0f, 0x0f, 0x0f,
+        0x0f, 0x0f, 0x0f, 0x0f,
+        0x0f, 0x0f, 0x0f, 0x0f,
+        0x0f, 0x0f, 0x0f, 0x0f,
+    };
+
+    // declaring our key
+    // 16 bytes of key or 128 bits of key
+    uint8_t key[NumberofBlocks][NumberofBlocks] = 
+    {
+        0x2b, 0x28, 0xab, 0x09,
+        0x7e, 0xae, 0xf7, 0xcf,
+        0x15, 0xd2, 0x15, 0x4f,
+        0x16, 0xa6, 0x88, 0x3c
+    };
+
+    Mat keyBlock(NumberofBlocks, NumberofBlocks, CV_8UC1);
+    Mat ivBlock(NumberofBlocks,NumberofBlocks,CV_8UC1);
+    dataCopytoMatrix(keyBlock,key);
+    dataCopytoMatrix(ivBlock,iv);
+
+    Mat newivBlock(NumberofBlocks,NumberofBlocks,CV_8UC1);
+
+    // now calling the encryption function to encrypt our text
+    for(int i=0;i<adjustedLength;i+=NumberofBytes)
+    {
+        newivBlock = XOR_CBC(ivBlock,adjustedData+i);
+        matrixCopytoArray(newivBlock,adjustedData+i);
+        ivBlock = file_encryption(adjustedData + i , keyBlock , encryptedData + i);
+    }
+
+    // now displaying the encrypted data 
+    //PrintArrayWithRange(encryptedData,"The encrypted data is : ",adjustedLength);
+
+    // Write the encrypted string out to file ""
+	ofstream outfile;
+	outfile.open("EncodedFile_CBC.txt", ios::out | ios::binary);
+	if (outfile.is_open())
+	{
+		outfile.write((char *)encryptedData,adjustedLength);
+		outfile.close();
+		cout << endl << "Wrote encrypted message to file" << endl;
+	}
+	else
+    {
+        cout << "Unable to open file";
+    }
+}
+
 Mat file_encryption(uint8_t data[],Mat key,uint8_t cipher[])
 {
     // declaring 2d array to store 16 bytes of data recieved to be encrypted
     uint8_t plainText[NumberofBlocks][NumberofBlocks];
 
-    int index = 0;
-    for (int row=0;row<NumberofBlocks;row++)
-    {
-        for(int col=0;col<NumberofBlocks;col++)
-        {
-            plainText[row][col] = data[index];
-            index++;
-        }
-    }
+    dataCopyTo2dArray(plainText,data);
 
     // declaring Mat to copy the 16 bytes of data
     Mat block(NumberofBlocks, NumberofBlocks, CV_8UC1);
@@ -157,8 +286,12 @@ Mat file_encryption(uint8_t data[],Mat key,uint8_t cipher[])
     return encrypted_data;
 }
 
-Mat XOR_CBC(Mat iv, Mat plainText)
+Mat XOR_CBC(Mat iv, uint8_t data[])
 {
+    Mat plainText(NumberofBlocks, NumberofBlocks, CV_8UC1);
+
+    oneDcopytoMatrix(plainText,data);    
+
     Mat temp(NumberofBlocks, NumberofBlocks, CV_8UC1);
 
     for (int row = 0; row < NumberofBlocks; row++)

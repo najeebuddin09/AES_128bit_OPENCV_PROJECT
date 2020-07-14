@@ -24,8 +24,11 @@ void PrintMatrix(Mat, const char *);
 void PrintArray(uint8_t *, const char *);
 void PrintArrayWithRange(uint8_t *, const char *,int);
 void PrintExpandedKey(uint8_t *, const char *);
+// data copy methods
 void dataCopytoMatrix(Mat, uint8_t array[4][4]);
 void matrixCopytoArray(Mat,uint8_t []);
+void dataCopyTo2dArray(uint8_t dest[4][4],uint8_t []);
+void oneDcopytoMatrix (Mat,uint8_t []);
 
 // first step key expansion
 void keyExpansion(Mat, uint8_t[]);
@@ -51,9 +54,12 @@ Mat block_decryption(Mat,Mat);
 
 // file encryption methods
 Mat file_encryption(uint8_t [],Mat ,uint8_t []);
+// ECB Mode
 void file_Encryption_ECB();
+// CBC Mode
+void file_Encryption_CBC();
 // for CBC mode XOR of IV and Plain Text
-Mat XOR_CBC(Mat iv, Mat plainText);
+Mat XOR_CBC(Mat ,uint8_t []);
 
 // file decryption methods
 Mat file_decryption(uint8_t [],Mat ,uint8_t []);

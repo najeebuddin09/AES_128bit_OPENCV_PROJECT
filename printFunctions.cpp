@@ -1,5 +1,7 @@
 #include "AES.hpp"
 
+// different print functions
+
 void PrintMatrix(Mat matrix, const char *sentence)
 {
     cout << endl << sentence << endl;
@@ -46,6 +48,8 @@ void PrintExpandedKey(uint8_t *array, const char *sentence)
     }
 }
 
+// different copy data methods
+
 void dataCopytoMatrix(Mat mat, uint8_t array[4][4])
 {
     for (int i = 0; i < NumberofBlocks; i++)
@@ -68,4 +72,30 @@ void matrixCopytoArray(Mat ciphered,uint8_t cipher[])
             ind++;
         }
     } 
+}
+
+void dataCopyTo2dArray(uint8_t dest[4][4],uint8_t source[])
+{
+    int index = 0;
+    for (int row=0;row<NumberofBlocks;row++)
+    {
+        for(int col=0;col<NumberofBlocks;col++)
+        {
+            dest[row][col] = source[index];
+            index++;
+        }
+    } 
+}
+
+void oneDcopytoMatrix (Mat dest,uint8_t source[])
+{
+    int index = 0;
+    for (int i = 0; i < NumberofBlocks; i++)
+    {
+        for (int j = 0; j < NumberofBlocks; j++)
+        {
+            dest.at<uint8_t>(i, j) = source[index];
+            index++;
+        }
+    }   
 }
