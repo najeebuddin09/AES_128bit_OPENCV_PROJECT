@@ -29,15 +29,16 @@ void file_Encryption_ECB()
         x++;
     }
 
+    int limit = x;
     // declaring array for the data
-    uint8_t data[x];
+    uint8_t data[limit];
     
-    for (int i=0;i<sizeof(data);i++)
+    for (int i=0;i<limit;i++)
     {
         data[i] = fileData[i];
     }
 
-    unsigned int orignalLength = strlen((const char *) data);
+    unsigned int orignalLength = limit;
     // cout<<endl<<"The length of data is "<<orignalLength<<endl;
 
     /* 
@@ -150,15 +151,17 @@ void file_Encryption_CBC()
         x++;
     }
 
+    int limit = x;
+
     // declaring array for the data
-    uint8_t data[x];
+    uint8_t data[limit];
     
-    for (int i=0;i<sizeof(data);i++)
+    for (int i=0;i<limit;i++)
     {
         data[i] = fileData[i];
     }
 
-    unsigned int orignalLength = strlen((const char *) data);
+    unsigned int orignalLength = limit;
     // cout<<endl<<"The length of data is "<<orignalLength<<endl;
 
     /* 

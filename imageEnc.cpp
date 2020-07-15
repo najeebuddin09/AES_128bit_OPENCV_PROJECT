@@ -7,6 +7,8 @@
 
 #include "AES.hpp"
 
+void image_encryption(Mat block,Mat key,int x,int y,Mat encrypt);
+
 void imageEnc ()
 {
     // 16 bytes of key or 128 bits of key
@@ -22,15 +24,25 @@ void imageEnc ()
     Mat keyBlock(NumberofBlocks, NumberofBlocks, CV_8UC1);
     dataCopytoMatrix(keyBlock,key);
 
-
-    // reading input image which must be name InputFile
+    // reading input image which must be named InputFile.jpg
     // our input image is 316 x 316
 
-    Mat InputImage = imread("InputFile.jpg",IMREAD_GRAYSCALE);
-    Mat Image = imread("InputFile.jpg",IMREAD_COLOR);
+    Mat InputImage = imread("InputFile.jpg",IMREAD_COLOR);
+    Mat EncodedImage(InputImage.rows,InputImage.cols,CV_8UC1);
 
     // calculating total pixels in the image
     int totalPixels = InputImage.rows * InputImage.cols;
+
+    /*
+    int adjustedPixels = totalPixels;
+
+    if (adjustedPixels % 16 != 0)
+    {
+        adjustedPixels = (adjustedPixels/NumberofBytes+1)*NumberofBytes;
+    }
+    */
+
+
 
     // now reading 4x4 blocs from the image 
     for (int row=0;row<InputImage.rows;row+=NumberofBlocks)
@@ -38,18 +50,37 @@ void imageEnc ()
         for (int col=0;col<InputImage.cols;col+=NumberofBlocks)
         {
             // selecting 4x4 block now
-            Mat tile = InputImage(cv::Range(row,min(row+NumberofBlocks,InputImage.rows)),
-                        cv::Range(col,min(col+NumberofBlocks,InputImage.cols)));
+            Mat tile(NumberofBlocks,NumberofBlocks,CV_8UC1);
+            tile = InputImage(cv::Range(row,min(row+NumberofBlocks,InputImage.rows)),cv::Range(col,min(col+NumberofBlocks,InputImage.cols)));
             
-            tile = block_encryption(tile,keyBlock);
+           image_encryption(tile,keyBlock,row,col,EncodedImage);
         }        
     }
 
-    Mat EncodedImage = InputImage;
-    imwrite("EncodedImage.jpg",EncodedImage);
-
-    imshow("InputImage",Image);
     imshow("EncryptedImage",EncodedImage);
-
+    
     waitKey();
 }
+
+void image_encryption(Mat block,Mat key,int x,int y,Mat encrypt)
+{
+
+    block = block_encryption(block,key);
+
+    for(int r=x;r<x+NumberofBlocks;r++)
+    {
+        for(int c=y;c<y+NumberofBlocks;c++)
+        {
+            encrypt.at<uint8_t>(r,c) = block.at<uint8_t>(r,c);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+

@@ -7,7 +7,7 @@
 
 #include "AES.hpp"
 
-void imageDec ()
+void imageDec()
 {
     // 16 bytes of key or 128 bits of key
     uint8_t key[NumberofBlocks][NumberofBlocks] = 
@@ -21,12 +21,10 @@ void imageDec ()
     // copying our key to Mat
     Mat keyBlock(NumberofBlocks, NumberofBlocks, CV_8UC1);
     dataCopytoMatrix(keyBlock,key);
+    
+    // reading Encoded image which is named EncodedImage
 
-
-    // reading input image which must be name InputFile
-    // our input image is 316 x 316
-
-    Mat EncodedImage = imread("EncodedImage.jpg",IMREAD_GRAYSCALE);
+    Mat EncodedImage = imread("EncodedImage.jpg",IMREAD_COLOR);
 
     // calculating total pixels in the image
 
@@ -38,11 +36,9 @@ void imageDec ()
         for (int col=0;col<EncodedImage.cols;col+=NumberofBlocks)
         {
             // selecting 4x4 block now
-            Mat tile = EncodedImage(cv::Range(row,min(row+NumberofBlocks,EncodedImage.rows)),
-                        cv::Range(col,min(col+NumberofBlocks,EncodedImage.cols)));
+            Mat imageTile = EncodedImage(cv::Range(row,min(row+NumberofBlocks,EncodedImage.rows)),cv::Range(col,min(col+NumberofBlocks,EncodedImage.cols)));
             
-            Mat decrypt = block_decryption(tile,keyBlock);
-            tile = tile + decrypt;
+            imageTile = block_decryption(imageTile,keyBlock);
         }        
     }
 
